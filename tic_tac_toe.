@@ -1,0 +1,131 @@
+import java.util.Arrays;
+import java.util.Scanner;
+ class Board{
+    private final int n ;
+   char[][]  board;
+    public Board(int n){
+        this.n = n;
+        board = new char[n][n];
+        for(int i =0;i<n;i++){
+            Arrays.fill(board[i],'.');
+        }
+    }
+
+    public boolean isValid(int row, int col){
+        if(row<0||row>=n||col<0||col>=n || board[row][col]!='.')return false;
+        return true;
+    }
+    public void printBoard(){
+        for(char[] row : board){
+            for(char cell : row){
+                System.out.print(cell + " ");
+            }
+            System.out.println();
+        }
+    }
+    public boolean isWinner(int row, int col , char c){
+        boolean win;
+
+        win = true;
+        for(int j=0;j<n;j++){
+            if(board[row][j]!=c)win = false;
+        }
+        if(win) return true;
+        win =true;
+        for(int j=0;j<n;j++){
+            if(board[j][col]!=c)win = false;
+        }
+        if(win) return true;
+
+
+        if(row==col){
+            win = true;
+            for(int i=0;i<n;i++){
+                if(board[i][i]!=c)win = false;
+            }
+            if(win)return true;
+
+        }
+        if(row+col == n){
+            win = true;
+            for(int i =0;i<n;i++){
+                if(board[i][n-1-i]!=c)win = false;
+
+            }
+            if(win)return true;
+        }
+        return false;
+
+    }
+    public boolean isDraw(){
+        for(int i =0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(board[i][j]=='.')return false;
+            }
+        }
+        return true;
+    }
+}
+class Player{
+     String name;
+     char mark;
+
+     public Player(String name, char mark){
+         this.name=name;
+         this.mark = mark;
+     }
+     public String getName(){
+         return name;
+     }
+     public char getMark(){
+         return mark;
+     }
+}
+public class Main {
+    public static void main(String[] args) {
+
+        System.out.println("Hello, World!");
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter board size: ");
+        int n = sc.nextInt();
+
+        Board b = new Board(n);
+        Player p1 = new Player("Player 1", 'X');
+        Player p2 = new Player("Player 2", '0');
+
+        Player[] players = {p1, p2};
+
+        int turn = 0;
+
+        b.printBoard();
+        while(true){
+
+            Player curr = players[turn%2];
+
+            System.out.println(curr.getName()+" (" +curr.getMark()+"), enter row and col:");
+            int row = sc.nextInt();
+            int col = sc.nextInt();
+
+            if(b.isValid(row, col)){
+                b.board[row][col] = curr.getMark();
+                b.printBoard();
+
+                if(b.isWinner(row, col, curr.getMark())){
+                    System.out.println("Player "+ curr.getName()+ " won!");
+                    break;
+                }
+                else if(b.isDraw()){
+                    System.out.println("Its a draw");
+                    break;
+                }
+                turn++;
+            }
+            else {
+                System.out.println("Invalid move");
+            }
+        }
+
+        sc.close();
+    }
+
+}
